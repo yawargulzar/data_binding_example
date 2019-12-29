@@ -1,14 +1,17 @@
 package com.f.data_binding_example
 
+import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.f.data_binding_example.databinding.ItemUserBinding
 
-class MainAdapter(private val userList: List<User>) : RecyclerView.Adapter<MainAdapter.MyViewHolder>() {
+class MainAdapter(private val userList: List<User>,private val listener :View.OnClickListener) : RecyclerView.Adapter<MainAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): MyViewHolder {
-        return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false))
+       val binding : ItemUserBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context),R.layout.item_user,parent,false)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -16,17 +19,16 @@ class MainAdapter(private val userList: List<User>) : RecyclerView.Adapter<MainA
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindTo(userList[position])
+        holder.bindTo(userList[position],listener)
 
     }
 
 
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val name = view.findViewById<TextView>(R.id.user_name)
-        private val weight = view.findViewById<TextView>(R.id.user_weight)
-        fun bindTo(user: User) {
-            name.text = user.name
-            weight.text = user.weight
+    class MyViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindTo(user: User, listener: View.OnClickListener) {
+            binding.userModel = user
+            binding.listener = listener
 
         }
     }
