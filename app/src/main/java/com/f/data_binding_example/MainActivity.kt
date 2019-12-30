@@ -1,5 +1,8 @@
 package com.f.data_binding_example
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -15,17 +18,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val viewModel = ViewModelProviders.of(this).get(DataBindingViewModel::class.java)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = MainAdapter(usersList(),this)
+        viewModel.stateUser.observe(this, Observer {
+            it ?: return@Observer
+            rv.adapter = MainAdapter(it,this)
+
+        })
+        viewModel.setUser()
     }
-    fun usersList() :List<User>
-    {
-        val usersList = ArrayList<User>()
-        usersList.add(User("Bismah","61"))
-        usersList.add(User("Tehreem","53"))
-        usersList.add(User("Yawar","54.4"))
-        return usersList
-    }
+
 }
